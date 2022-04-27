@@ -59,5 +59,30 @@ public class ProjectService {
 		
 		return new ProjectDTO(newProject);
 	}
+	
+	/**
+	 * Update existing project
+	 * @param dto - project form
+	 * @param id - project id
+	 * @return new dto from updated project
+	 */
+	public ProjectDTO save(ProjectCreationDTO dto, Long id) {
+		Project newProject = new Project(dto, id);
+		
+		newProject = this.repo.save(newProject);
+		
+		return new ProjectDTO(newProject);
+	}
+	
+	/**
+	 * Delete a project by ID
+	 * @param id - project ID
+	 * @return true if successful delete, otherwise false.
+	 */
+	public boolean delete(Long id) {
+		this.repo.deleteById(id);
+		
+		return this.repo.findById(id).isEmpty();
+	}
 
 }
