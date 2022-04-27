@@ -1,6 +1,7 @@
 package com.whatacite.www.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class CitationService {
 
 	@Autowired
 	private CitationRepository repo;
+	
+	private final String[] dullWords = {"in", "the", "and", "have", "has", "do", "but", "with", "to"};
 	
 	public List<CitationDTO> getAll() {
 		List<CitationDTO> dtos = new ArrayList<>();
@@ -36,6 +39,20 @@ public class CitationService {
 		newCitation = this.repo.save(newCitation);
 		
 		return new CitationDTO(newCitation);
+	}
+	
+	public List<CitationDTO> getByName(String search) {
+		for (String str : dullWords) {
+			search.replaceAll("\\s" + str + "\\s", " ");
+		}
+		String[] keywords = search.split(" ");
+		
+		List<Citation> citations = this.repo.findAll();
+		// Remove citations if their titles contain none of the keywords
+		citations.removeIf(
+				c -> !Arrays.stream(keywords).anyMatch(k -> c.getTitle().contains(k)));
+		
+		return citations.stream().map(c -> new CitationDTO(c)).toList();
 	}
 	
 }

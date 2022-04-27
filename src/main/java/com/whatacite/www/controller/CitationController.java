@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whatacite.www.model.dto.CitationCreationDTO;
@@ -40,6 +41,13 @@ public class CitationController {
 		 CitationDTO dto = this.service.save(newDto, projectId);
 		 
 		 return dto.getId() != null ? ResponseEntity.ok(dto) : ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<CitationDTO>> findByTitle(@RequestParam("q") String search) {
+		List<CitationDTO> dtos = this.service.getByName(search);
+		
+		return dtos.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(dtos);
 	}
 	
 }
