@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.whatacite.www.model.dto.ProjectCreationDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,15 +31,15 @@ public class Project {
 	private Long id;
 	
 	@Getter
-	@Setter
 	private String title;
 	
 	@Getter
-	@Setter
+	private String description;
+	
+	@Getter
 	private Date lastUpdated;
 	
 	@Getter
-	@Setter
 	private Date due;
 	
 	@Getter
@@ -48,5 +50,17 @@ public class Project {
 			joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "citation_id", referencedColumnName = "id"))
 	private List<Citation> citations;
+	
+	public Project(ProjectCreationDTO dto) {
+		this.title = dto.getTitle();
+		this.description = dto.getDescription();
+		this.lastUpdated = new Date();
+		this.due = dto.getDueDate();
+	}
+	
+	public Project(ProjectCreationDTO dto, Long id) {
+		this(dto);
+		this.id = id;
+	}
 
 }

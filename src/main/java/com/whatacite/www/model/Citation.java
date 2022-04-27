@@ -3,6 +3,7 @@ package com.whatacite.www.model;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -49,6 +50,11 @@ public class Citation {
 	
 	@Getter
 	@Setter
+	@Column(columnDefinition = "varchar(500)")
+	private String abstrac;
+	
+	@Getter
+	@Setter
 	@ManyToMany(mappedBy = "citations")
 	private List<Project> project;
 	
@@ -60,6 +66,16 @@ public class Citation {
 	
 	public int getPublishedYear() {
 		return this.published.get(Calendar.YEAR);
+	}
+	
+	public String asCitation() {
+		StringBuilder builder = new StringBuilder(
+				String.format("%s (%d). %s. %s.",
+						authorLine, getPublishedYear(), title, publisher));
+		if (!doi.isEmpty()) {
+			builder.append(" " + doi);
+		}
+		return builder.toString();
 	}
 	
 }
