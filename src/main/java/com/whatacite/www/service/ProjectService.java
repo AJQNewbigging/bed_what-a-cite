@@ -20,7 +20,7 @@ public class ProjectService {
 	public List<ProjectDTO> getAll() {
 		List<ProjectDTO> dtos = new ArrayList<>();
 		
-		List<Project> projects = this.repo.findAll();
+		List<Project> projects = this.repo.findAllOrderByLastUpdated();
 		
 		projects.forEach(p -> dtos.add(new ProjectDTO(p)));
 		
