@@ -3,6 +3,7 @@ package com.whatacite.www.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,11 +35,20 @@ public class ProjectController {
 	@GetMapping
 	public ResponseEntity<List<ProjectDTO>> findAll() {
 		
-		List<ProjectDTO> dtos = service.getAll();
+		List<ProjectDTO> dtos = this.service.getAll();
 		if (dtos.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok(dtos);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<ProjectDTO> find(@PathVariable("id") Long id) {
+		Optional<ProjectDTO> optDto = this.service.get(id);
+		
+		if (optDto.isEmpty()) return ResponseEntity.notFound().build();
+		
+		return ResponseEntity.ok(optDto.get());
 	}
 	
 	@PostMapping
