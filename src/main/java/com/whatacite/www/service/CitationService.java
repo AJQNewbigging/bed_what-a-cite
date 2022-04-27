@@ -3,6 +3,7 @@ package com.whatacite.www.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,20 @@ public class CitationService {
 		return new CitationDTO(newCitation);
 	}
 	
+	public CitationDTO update(CitationCreationDTO dto, Long id) {
+		Optional<Citation> opt = this.repo.findById(id);
+		if (!opt.isPresent()) {
+			return null;
+		}
+		Citation existing = opt.get();
+		Citation updates = new Citation(dto, id);
+		
+		updates.setProject(existing.getProject());
+		existing = this.repo.save(updates);
+		
+		return new CitationDTO(existing);
+	}
+	
 	public List<CitationDTO> getByName(String search) {
 		for (String str : dullWords) {
 			search.replaceAll("\\s" + str + "\\s", " ");
@@ -53,6 +68,16 @@ public class CitationService {
 				c -> !Arrays.stream(keywords).anyMatch(k -> c.getTitle().contains(k)));
 		
 		return citations.stream().map(c -> new CitationDTO(c)).toList();
+	}
+	
+	public Optional<CitationDTO> get(Long id) {
+		Optional<Citation> citation = this.repo.findById(id);
+		
+		if (citation.isEmpty() ) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(new CitationDTO(citation.get()));
 	}
 	
 }
