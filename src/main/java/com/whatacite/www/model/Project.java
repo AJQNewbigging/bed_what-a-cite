@@ -1,7 +1,8 @@
 package com.whatacite.www.model;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,13 +50,14 @@ public class Project {
 			name = "project_citation",
 			joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "citation_id", referencedColumnName = "id"))
-	private List<Citation> citations;
+	private Set<Citation> citations;
 	
 	public Project(ProjectCreationDTO dto) {
 		this.title = dto.getTitle();
 		this.description = dto.getDescription();
 		this.lastUpdated = new Date();
 		this.due = dto.getDueDate();
+		this.citations = new HashSet<>();
 	}
 	
 	public Project(ProjectCreationDTO dto, Long id) {

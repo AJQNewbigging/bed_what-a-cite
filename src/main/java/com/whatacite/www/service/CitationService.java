@@ -80,4 +80,10 @@ public class CitationService {
 		return Optional.of(new CitationDTO(citation.get()));
 	}
 	
+	public boolean delete(long id) {
+		this.repo.deleteById(id);
+		
+		return this.repo.findById(id).isEmpty();
+	}
+	
 }

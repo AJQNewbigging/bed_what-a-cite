@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,6 +74,11 @@ public class CitationController {
 		CitationDTO updated = this.service.update(dto, id);
 		
 		return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+		return this.service.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
 	}
 	
 	// Validation handler, with guidance from Baeldung

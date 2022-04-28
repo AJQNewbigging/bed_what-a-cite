@@ -1,8 +1,8 @@
 package com.whatacite.www.model;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -61,10 +61,10 @@ public class Citation {
 	@Getter
 	@Setter
 	@ManyToMany(mappedBy = "citations", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-	private List<Project> project;
+	private Set<Project> project;
 	
 	public Citation(CitationCreationDTO dto) {
-		this.project = new ArrayList<>();
+		this.project = new HashSet<>();
 		this.title = dto.getTitle();
 		this.authorLine = dto.getAuthorLine();
 		this.setPublished(dto.getYearPublished());
