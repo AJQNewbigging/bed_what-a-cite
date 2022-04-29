@@ -63,7 +63,7 @@ public class CitationService {
 	
 	public List<CitationDTO> getByName(String search) {
 		for (String str : dullWords) {
-			search.replaceAll("\\s" + str + "\\s", " ");
+			search = search.replaceAll("\\s" + str + "\\s", " ");
 		}
 		String[] keywords = search.split(" ");
 		
