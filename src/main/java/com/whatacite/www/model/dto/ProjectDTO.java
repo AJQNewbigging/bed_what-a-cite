@@ -1,5 +1,6 @@
 package com.whatacite.www.model.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ProjectDTO {
 	
 	private Date lastUpdated;
 	
-	private Date dueDate;
+	private String dueDate;
 	
 	private List<CitationDTO> citations;
 	
@@ -34,7 +35,8 @@ public class ProjectDTO {
 		this.title = p.getTitle();
 		this.description = p.getDescription();
 		this.lastUpdated = p.getLastUpdated();
-		this.dueDate = p.getDue();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		this.dueDate = formatter.format(p.getDue());
 		
 		this.citations = new ArrayList<>();
 		

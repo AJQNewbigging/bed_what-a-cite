@@ -21,11 +21,14 @@ public class CitationDTO {
 	
 	private String abstrac;
 	
+	private boolean hasProject;
+	
 	public CitationDTO(Citation c) {
 		this.id = c.getId();
 		this.title = c.getTitle();
 		this.citation = c.asCitation();
 		this.abstrac = c.getAbstrac();
+		hasProject = !c.getProject().isEmpty();
 	}
 	
 }

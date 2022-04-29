@@ -84,5 +84,16 @@ public class ProjectService {
 		
 		return this.repo.findById(id).isEmpty();
 	}
+	
+	public boolean deleteCitation(Long projectId, Long citationId) {
+		Optional<Project> opt = this.repo.findById(projectId);
+		if (!opt.isPresent()) {
+			return false;
+		}
+		Project project = opt.get();
+		project.removeCitation(citationId);
+		this.repo.save(project);
+		return true;
+	}
 
 }

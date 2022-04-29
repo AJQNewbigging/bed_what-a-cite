@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import com.whatacite.www.service.CitationService;
 
 @RestController
 @RequestMapping("/citation")
+@CrossOrigin("*")
 public class CitationController {
 
 	@Autowired
@@ -40,7 +42,7 @@ public class CitationController {
 		
 		List<CitationDTO> dtos = this.service.getAll();
 		if (dtos.isEmpty()) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok(dtos);
 	}
@@ -57,7 +59,7 @@ public class CitationController {
 	public ResponseEntity<List<CitationDTO>> findByTitle(@RequestParam("q") String search) {
 		List<CitationDTO> dtos = this.service.getByName(search);
 		
-		return dtos.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(dtos);
+		return dtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(dtos);
 	}
 	
 	@GetMapping("/{id}")
@@ -65,7 +67,7 @@ public class CitationController {
 		
 		Optional<CitationDTO> opt = this.service.get(id);
 		
-		return opt.isPresent() ? ResponseEntity.ok(opt.get()) : ResponseEntity.notFound().build();	
+		return opt.isPresent() ? ResponseEntity.ok(opt.get()) : ResponseEntity.noContent().build();	
 	}
 	
 	@PutMapping("/{id}")
@@ -73,12 +75,19 @@ public class CitationController {
 			@PathVariable("id") Long id) {
 		CitationDTO updated = this.service.update(dto, id);
 		
-		return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
+		return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id){
 		return this.service.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping("/project/{id}")
+	public ResponseEntity<List<CitationDTO>> getByProject(@PathVariable("id") Long projectId) {
+		List<CitationDTO> citations = this.service.getByProjectId(projectId);
+		
+		return ResponseEntity.ok(citations);
 	}
 	
 	// Validation handler, with guidance from Baeldung

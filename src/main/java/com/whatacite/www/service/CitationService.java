@@ -13,6 +13,7 @@ import com.whatacite.www.model.Project;
 import com.whatacite.www.model.dto.CitationCreationDTO;
 import com.whatacite.www.model.dto.CitationDTO;
 import com.whatacite.www.repository.CitationRepository;
+import com.whatacite.www.repository.ProjectRepository;
 
 @Service
 public class CitationService {
@@ -20,12 +21,15 @@ public class CitationService {
 	@Autowired
 	private CitationRepository repo;
 	
+	@Autowired
+	private ProjectRepository projectRepo;
+	
 	private final String[] dullWords = {"in", "the", "and", "have", "has", "do", "but", "with", "to"};
 	
 	public List<CitationDTO> getAll() {
 		List<CitationDTO> dtos = new ArrayList<>();
 		
-		List<Citation> citations = this.repo.findAll();
+		List<Citation> citations = this.repo.findAllByOrderByLastUpdatedDesc();
 		
 		citations.forEach(c -> dtos.add(new CitationDTO(c)));
 		
@@ -34,10 +38,11 @@ public class CitationService {
 	
 	public CitationDTO save(CitationCreationDTO dto, Long projectId) {
 		Citation newCitation = new Citation(dto);
-		
-		Project p = Project.builder().id(projectId).build();
-		newCitation.addProject(p);
 		newCitation = this.repo.save(newCitation);
+		
+		Project p = projectRepo.getById(projectId);
+		p.addCitation(newCitation);
+		this.projectRepo.save(p);
 		
 		return new CitationDTO(newCitation);
 	}
@@ -84,6 +89,15 @@ public class CitationService {
 		this.repo.deleteById(id);
 		
 		return this.repo.findById(id).isEmpty();
+	}
+	
+	public List<CitationDTO> getByProjectId(Long id) {
+		Optional<Project> project = this.projectRepo.findById(id);
+		if (project.isPresent()) {
+			return project.get().getCitations().stream().map(c -> new CitationDTO(c)).toList();
+		}
+		
+		return new ArrayList<>();
 	}
 	
 }

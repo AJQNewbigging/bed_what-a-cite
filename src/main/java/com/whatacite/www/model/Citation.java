@@ -1,17 +1,17 @@
 package com.whatacite.www.model;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,6 +27,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "citation")
 public class Citation {
 
 	@Getter
@@ -60,7 +61,11 @@ public class Citation {
 	
 	@Getter
 	@Setter
-	@ManyToMany(mappedBy = "citations", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	private Date lastUpdated;
+	
+	@Getter
+	@Setter
+	@ManyToMany(mappedBy = "citations")
 	private Set<Project> project;
 	
 	public Citation(CitationCreationDTO dto) {
@@ -71,11 +76,13 @@ public class Citation {
 		this.publisher = dto.getPublisher();
 		this.doi = dto.getDoi();
 		this.abstrac = dto.getAbstrac();
+		this.lastUpdated = new Date();
 	}
 	
 	public Citation(CitationCreationDTO dto, Long id) {
 		this(dto);
 		this.id = id;
+		this.lastUpdated = new Date();
 	}
 	
 	public void setPublished(int year) {
@@ -92,7 +99,7 @@ public class Citation {
 		StringBuilder builder = new StringBuilder(
 				String.format("%s (%d). %s. %s.",
 						authorLine, getPublishedYear(), title, publisher));
-		if (!doi.isEmpty()) {
+		if (!(doi == null || doi.isEmpty())) {
 			builder.append(" " + doi);
 		}
 		return builder.toString();

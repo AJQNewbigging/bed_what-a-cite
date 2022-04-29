@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 import com.whatacite.www.model.dto.ProjectCreationDTO;
 
@@ -24,6 +25,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "project")
 public class Project {
 	
 	@Getter
@@ -48,8 +50,8 @@ public class Project {
 	@ManyToMany
 	@JoinTable(
 			name = "project_citation",
-			joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "citation_id", referencedColumnName = "id"))
+			joinColumns = @JoinColumn(name = "project_id"),
+			inverseJoinColumns = @JoinColumn(name = "citation_id"))
 	private Set<Citation> citations;
 	
 	public Project(ProjectCreationDTO dto) {
@@ -63,6 +65,14 @@ public class Project {
 	public Project(ProjectCreationDTO dto, Long id) {
 		this(dto);
 		this.id = id;
+	}
+	
+	public void addCitation(Citation c) {
+		this.citations.add(c);
+	}
+	
+	public void removeCitation(Long id) {
+		this.citations.removeIf(c -> c.getId() == id);
 	}
 
 }

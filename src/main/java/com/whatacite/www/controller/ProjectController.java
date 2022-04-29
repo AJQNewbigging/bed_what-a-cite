@@ -10,8 +10,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ import com.whatacite.www.service.ProjectService;
 
 @RestController
 @RequestMapping("/project")
+@CrossOrigin("*")
 public class ProjectController {
 
 	@Autowired
@@ -36,7 +39,7 @@ public class ProjectController {
 	
 	@GetMapping
 	public ResponseEntity<List<ProjectDTO>> findAll() {
-		
+
 		List<ProjectDTO> dtos = this.service.getAll();
 		if (dtos.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -71,6 +74,12 @@ public class ProjectController {
 		ProjectDTO updatedDto = this.service.save(dto, id);
 		
 		return ResponseEntity.ok(updatedDto);
+	}
+	
+	@DeleteMapping("/{projectId}/citation/{citeId}")
+	public ResponseEntity<?> deleteCitation(@PathVariable("projectId") Long projectId, @PathVariable("citeId") Long citationId) {
+		return this.service.deleteCitation(projectId, citationId) ? ResponseEntity.ok().build() :
+			ResponseEntity.notFound().build();
 	}
 	
 	// Validation handler, with guidance from Baeldung
